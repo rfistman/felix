@@ -8,6 +8,37 @@
 
 /* Begin PBXBuildFile section */
 		D2EB36041893270100FCFD45 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36031893270100FCFD45 /* main.cpp */; };
+		D2EB36481893287E00FCFD45 /* flx_run_lib_static.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36461893287E00FCFD45 /* flx_run_lib_static.cpp */; };
+		D2EB36491893287E00FCFD45 /* flx_run_main.cxx in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36471893287E00FCFD45 /* flx_run_main.cxx */; };
+		D2EB36721893289D00FCFD45 /* flx_eh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB364B1893289D00FCFD45 /* flx_eh.cpp */; };
+		D2EB36731893289D00FCFD45 /* flx_exceptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB364D1893289D00FCFD45 /* flx_exceptions.cpp */; };
+		D2EB36741893289D00FCFD45 /* flx_collector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36501893289D00FCFD45 /* flx_collector.cpp */; };
+		D2EB36751893289D00FCFD45 /* flx_gc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36521893289D00FCFD45 /* flx_gc.cpp */; };
+		D2EB36761893289D00FCFD45 /* flx_judy_scanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36551893289D00FCFD45 /* flx_judy_scanner.cpp */; };
+		D2EB36771893289D00FCFD45 /* flx_serialisers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36571893289D00FCFD45 /* flx_serialisers.cpp */; };
+		D2EB36781893289D00FCFD45 /* flx_ts_collector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36591893289D00FCFD45 /* flx_ts_collector.cpp */; };
+		D2EB36791893289D00FCFD45 /* pthread_bound_queue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB365B1893289D00FCFD45 /* pthread_bound_queue.cpp */; };
+		D2EB367A1893289D00FCFD45 /* pthread_work_fifo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB365D1893289D00FCFD45 /* pthread_work_fifo.cpp */; };
+		D2EB367B1893289D00FCFD45 /* pthread_condv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36601893289D00FCFD45 /* pthread_condv.cpp */; };
+		D2EB367C1893289D00FCFD45 /* pthread_counter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36621893289D00FCFD45 /* pthread_counter.cpp */; };
+		D2EB367D1893289D00FCFD45 /* pthread_monitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36641893289D00FCFD45 /* pthread_monitor.cpp */; };
+		D2EB367E1893289D00FCFD45 /* pthread_mutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36661893289D00FCFD45 /* pthread_mutex.cpp */; };
+		D2EB367F1893289D00FCFD45 /* pthread_posix_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36681893289D00FCFD45 /* pthread_posix_thread.cpp */; };
+		D2EB36801893289D00FCFD45 /* pthread_semaphore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36691893289D00FCFD45 /* pthread_semaphore.cpp */; };
+		D2EB36811893289D00FCFD45 /* pthread_thread_control.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB366C1893289D00FCFD45 /* pthread_thread_control.cpp */; };
+		D2EB36821893289D00FCFD45 /* pthread_waitable_bool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB366D1893289D00FCFD45 /* pthread_waitable_bool.cpp */; };
+		D2EB36831893289D00FCFD45 /* pthread_win_posix_condv_emul.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB366F1893289D00FCFD45 /* pthread_win_posix_condv_emul.cpp */; };
+		D2EB36841893289D00FCFD45 /* pthread_win_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36711893289D00FCFD45 /* pthread_win_thread.cpp */; };
+		D2EB36991893293700FCFD45 /* flx_dynlink.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36881893293700FCFD45 /* flx_dynlink.cpp */; };
+		D2EB369A1893293700FCFD45 /* flx_executil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB368A1893293700FCFD45 /* flx_executil.cpp */; };
+		D2EB369B1893293700FCFD45 /* flx_i18n.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB368C1893293700FCFD45 /* flx_i18n.cpp */; };
+		D2EB369C1893293700FCFD45 /* flx_ioutil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB368E1893293700FCFD45 /* flx_ioutil.cpp */; };
+		D2EB369D1893293700FCFD45 /* flx_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36901893293700FCFD45 /* flx_main.cpp */; };
+		D2EB369E1893293700FCFD45 /* flx_rtl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36911893293700FCFD45 /* flx_rtl.cpp */; };
+		D2EB369F1893293700FCFD45 /* flx_strutil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36931893293700FCFD45 /* flx_strutil.cpp */; };
+		D2EB36A01893293700FCFD45 /* flx_sync.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36951893293700FCFD45 /* flx_sync.cpp */; };
+		D2EB36A11893293700FCFD45 /* plat_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36971893293700FCFD45 /* plat_linux.cpp */; };
+		D2EB36A5189329FF00FCFD45 /* flx_async.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D2EB36A3189329FF00FCFD45 /* flx_async.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +56,66 @@
 /* Begin PBXFileReference section */
 		D2EB36001893270100FCFD45 /* xcrtl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = xcrtl; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2EB36031893270100FCFD45 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		D2EB36461893287E00FCFD45 /* flx_run_lib_static.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = flx_run_lib_static.cpp; path = src/flx_drivers/flx_run_lib_static.cpp; sourceTree = "<group>"; };
+		D2EB36471893287E00FCFD45 /* flx_run_main.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = flx_run_main.cxx; path = src/flx_drivers/flx_run_main.cxx; sourceTree = "<group>"; };
+		D2EB364B1893289D00FCFD45 /* flx_eh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_eh.cpp; sourceTree = "<group>"; };
+		D2EB364C1893289D00FCFD45 /* flx_eh.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_eh.hpp; sourceTree = "<group>"; };
+		D2EB364D1893289D00FCFD45 /* flx_exceptions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_exceptions.cpp; sourceTree = "<group>"; };
+		D2EB364E1893289D00FCFD45 /* flx_exceptions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_exceptions.hpp; sourceTree = "<group>"; };
+		D2EB36501893289D00FCFD45 /* flx_collector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_collector.cpp; sourceTree = "<group>"; };
+		D2EB36511893289D00FCFD45 /* flx_collector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_collector.hpp; sourceTree = "<group>"; };
+		D2EB36521893289D00FCFD45 /* flx_gc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_gc.cpp; sourceTree = "<group>"; };
+		D2EB36531893289D00FCFD45 /* flx_gc.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_gc.hpp; sourceTree = "<group>"; };
+		D2EB36541893289D00FCFD45 /* flx_gc_private.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_gc_private.hpp; sourceTree = "<group>"; };
+		D2EB36551893289D00FCFD45 /* flx_judy_scanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_judy_scanner.cpp; sourceTree = "<group>"; };
+		D2EB36561893289D00FCFD45 /* flx_judy_scanner.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_judy_scanner.hpp; sourceTree = "<group>"; };
+		D2EB36571893289D00FCFD45 /* flx_serialisers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_serialisers.cpp; sourceTree = "<group>"; };
+		D2EB36581893289D00FCFD45 /* flx_serialisers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_serialisers.hpp; sourceTree = "<group>"; };
+		D2EB36591893289D00FCFD45 /* flx_ts_collector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_ts_collector.cpp; sourceTree = "<group>"; };
+		D2EB365A1893289D00FCFD45 /* flx_ts_collector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_ts_collector.hpp; sourceTree = "<group>"; };
+		D2EB365B1893289D00FCFD45 /* pthread_bound_queue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_bound_queue.cpp; sourceTree = "<group>"; };
+		D2EB365C1893289D00FCFD45 /* pthread_bound_queue.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pthread_bound_queue.hpp; sourceTree = "<group>"; };
+		D2EB365D1893289D00FCFD45 /* pthread_work_fifo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_work_fifo.cpp; sourceTree = "<group>"; };
+		D2EB365E1893289D00FCFD45 /* pthread_work_fifo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pthread_work_fifo.hpp; sourceTree = "<group>"; };
+		D2EB36601893289D00FCFD45 /* pthread_condv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_condv.cpp; sourceTree = "<group>"; };
+		D2EB36611893289D00FCFD45 /* pthread_condv.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pthread_condv.hpp; sourceTree = "<group>"; };
+		D2EB36621893289D00FCFD45 /* pthread_counter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_counter.cpp; sourceTree = "<group>"; };
+		D2EB36631893289D00FCFD45 /* pthread_counter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pthread_counter.hpp; sourceTree = "<group>"; };
+		D2EB36641893289D00FCFD45 /* pthread_monitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_monitor.cpp; sourceTree = "<group>"; };
+		D2EB36651893289D00FCFD45 /* pthread_monitor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pthread_monitor.hpp; sourceTree = "<group>"; };
+		D2EB36661893289D00FCFD45 /* pthread_mutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_mutex.cpp; sourceTree = "<group>"; };
+		D2EB36671893289D00FCFD45 /* pthread_mutex.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pthread_mutex.hpp; sourceTree = "<group>"; };
+		D2EB36681893289D00FCFD45 /* pthread_posix_thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_posix_thread.cpp; sourceTree = "<group>"; };
+		D2EB36691893289D00FCFD45 /* pthread_semaphore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_semaphore.cpp; sourceTree = "<group>"; };
+		D2EB366A1893289D00FCFD45 /* pthread_semaphore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pthread_semaphore.hpp; sourceTree = "<group>"; };
+		D2EB366B1893289D00FCFD45 /* pthread_thread.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pthread_thread.hpp; sourceTree = "<group>"; };
+		D2EB366C1893289D00FCFD45 /* pthread_thread_control.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_thread_control.cpp; sourceTree = "<group>"; };
+		D2EB366D1893289D00FCFD45 /* pthread_waitable_bool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_waitable_bool.cpp; sourceTree = "<group>"; };
+		D2EB366E1893289D00FCFD45 /* pthread_waitable_bool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pthread_waitable_bool.hpp; sourceTree = "<group>"; };
+		D2EB366F1893289D00FCFD45 /* pthread_win_posix_condv_emul.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_win_posix_condv_emul.cpp; sourceTree = "<group>"; };
+		D2EB36701893289D00FCFD45 /* pthread_win_posix_condv_emul.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pthread_win_posix_condv_emul.hpp; sourceTree = "<group>"; };
+		D2EB36711893289D00FCFD45 /* pthread_win_thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pthread_win_thread.cpp; sourceTree = "<group>"; };
+		D2EB36861893293700FCFD45 /* flx_compiler_support_bodies.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_compiler_support_bodies.hpp; sourceTree = "<group>"; };
+		D2EB36871893293700FCFD45 /* flx_compiler_support_headers.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_compiler_support_headers.hpp; sourceTree = "<group>"; };
+		D2EB36881893293700FCFD45 /* flx_dynlink.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_dynlink.cpp; sourceTree = "<group>"; };
+		D2EB36891893293700FCFD45 /* flx_dynlink.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_dynlink.hpp; sourceTree = "<group>"; };
+		D2EB368A1893293700FCFD45 /* flx_executil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_executil.cpp; sourceTree = "<group>"; };
+		D2EB368B1893293700FCFD45 /* flx_executil.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_executil.hpp; sourceTree = "<group>"; };
+		D2EB368C1893293700FCFD45 /* flx_i18n.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_i18n.cpp; sourceTree = "<group>"; };
+		D2EB368D1893293700FCFD45 /* flx_i18n.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_i18n.hpp; sourceTree = "<group>"; };
+		D2EB368E1893293700FCFD45 /* flx_ioutil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_ioutil.cpp; sourceTree = "<group>"; };
+		D2EB368F1893293700FCFD45 /* flx_ioutil.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_ioutil.hpp; sourceTree = "<group>"; };
+		D2EB36901893293700FCFD45 /* flx_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_main.cpp; sourceTree = "<group>"; };
+		D2EB36911893293700FCFD45 /* flx_rtl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_rtl.cpp; sourceTree = "<group>"; };
+		D2EB36921893293700FCFD45 /* flx_rtl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_rtl.hpp; sourceTree = "<group>"; };
+		D2EB36931893293700FCFD45 /* flx_strutil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_strutil.cpp; sourceTree = "<group>"; };
+		D2EB36941893293700FCFD45 /* flx_strutil.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_strutil.hpp; sourceTree = "<group>"; };
+		D2EB36951893293700FCFD45 /* flx_sync.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_sync.cpp; sourceTree = "<group>"; };
+		D2EB36961893293700FCFD45 /* flx_sync.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_sync.hpp; sourceTree = "<group>"; };
+		D2EB36971893293700FCFD45 /* plat_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plat_linux.cpp; sourceTree = "<group>"; };
+		D2EB36981893293700FCFD45 /* plat_linux.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = plat_linux.hpp; sourceTree = "<group>"; };
+		D2EB36A3189329FF00FCFD45 /* flx_async.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_async.cpp; sourceTree = "<group>"; };
+		D2EB36A4189329FF00FCFD45 /* flx_async.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_async.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +132,12 @@
 		D2EB35F71893270100FCFD45 = {
 			isa = PBXGroup;
 			children = (
+				D2EB36A2189329FF00FCFD45 /* flx_async */,
+				D2EB36851893293700FCFD45 /* rtl */,
+				D2EB364A1893289D00FCFD45 /* exceptions */,
+				D2EB364F1893289D00FCFD45 /* gc */,
+				D2EB365F1893289D00FCFD45 /* pthread */,
+				D2EB36451893286600FCFD45 /* flx_drivers */,
 				D2EB36021893270100FCFD45 /* xcrtl */,
 				D2EB36011893270100FCFD45 /* Products */,
 			);
@@ -60,6 +157,113 @@
 				D2EB36031893270100FCFD45 /* main.cpp */,
 			);
 			path = xcrtl;
+			sourceTree = "<group>";
+		};
+		D2EB36451893286600FCFD45 /* flx_drivers */ = {
+			isa = PBXGroup;
+			children = (
+				D2EB36461893287E00FCFD45 /* flx_run_lib_static.cpp */,
+				D2EB36471893287E00FCFD45 /* flx_run_main.cxx */,
+			);
+			name = flx_drivers;
+			sourceTree = "<group>";
+		};
+		D2EB364A1893289D00FCFD45 /* exceptions */ = {
+			isa = PBXGroup;
+			children = (
+				D2EB364B1893289D00FCFD45 /* flx_eh.cpp */,
+				D2EB364C1893289D00FCFD45 /* flx_eh.hpp */,
+				D2EB364D1893289D00FCFD45 /* flx_exceptions.cpp */,
+				D2EB364E1893289D00FCFD45 /* flx_exceptions.hpp */,
+			);
+			name = exceptions;
+			path = src/exceptions;
+			sourceTree = "<group>";
+		};
+		D2EB364F1893289D00FCFD45 /* gc */ = {
+			isa = PBXGroup;
+			children = (
+				D2EB36501893289D00FCFD45 /* flx_collector.cpp */,
+				D2EB36511893289D00FCFD45 /* flx_collector.hpp */,
+				D2EB36521893289D00FCFD45 /* flx_gc.cpp */,
+				D2EB36531893289D00FCFD45 /* flx_gc.hpp */,
+				D2EB36541893289D00FCFD45 /* flx_gc_private.hpp */,
+				D2EB36551893289D00FCFD45 /* flx_judy_scanner.cpp */,
+				D2EB36561893289D00FCFD45 /* flx_judy_scanner.hpp */,
+				D2EB36571893289D00FCFD45 /* flx_serialisers.cpp */,
+				D2EB36581893289D00FCFD45 /* flx_serialisers.hpp */,
+				D2EB36591893289D00FCFD45 /* flx_ts_collector.cpp */,
+				D2EB365A1893289D00FCFD45 /* flx_ts_collector.hpp */,
+				D2EB365B1893289D00FCFD45 /* pthread_bound_queue.cpp */,
+				D2EB365C1893289D00FCFD45 /* pthread_bound_queue.hpp */,
+				D2EB365D1893289D00FCFD45 /* pthread_work_fifo.cpp */,
+				D2EB365E1893289D00FCFD45 /* pthread_work_fifo.hpp */,
+			);
+			name = gc;
+			path = src/gc;
+			sourceTree = "<group>";
+		};
+		D2EB365F1893289D00FCFD45 /* pthread */ = {
+			isa = PBXGroup;
+			children = (
+				D2EB36601893289D00FCFD45 /* pthread_condv.cpp */,
+				D2EB36611893289D00FCFD45 /* pthread_condv.hpp */,
+				D2EB36621893289D00FCFD45 /* pthread_counter.cpp */,
+				D2EB36631893289D00FCFD45 /* pthread_counter.hpp */,
+				D2EB36641893289D00FCFD45 /* pthread_monitor.cpp */,
+				D2EB36651893289D00FCFD45 /* pthread_monitor.hpp */,
+				D2EB36661893289D00FCFD45 /* pthread_mutex.cpp */,
+				D2EB36671893289D00FCFD45 /* pthread_mutex.hpp */,
+				D2EB36681893289D00FCFD45 /* pthread_posix_thread.cpp */,
+				D2EB36691893289D00FCFD45 /* pthread_semaphore.cpp */,
+				D2EB366A1893289D00FCFD45 /* pthread_semaphore.hpp */,
+				D2EB366B1893289D00FCFD45 /* pthread_thread.hpp */,
+				D2EB366C1893289D00FCFD45 /* pthread_thread_control.cpp */,
+				D2EB366D1893289D00FCFD45 /* pthread_waitable_bool.cpp */,
+				D2EB366E1893289D00FCFD45 /* pthread_waitable_bool.hpp */,
+				D2EB366F1893289D00FCFD45 /* pthread_win_posix_condv_emul.cpp */,
+				D2EB36701893289D00FCFD45 /* pthread_win_posix_condv_emul.hpp */,
+				D2EB36711893289D00FCFD45 /* pthread_win_thread.cpp */,
+			);
+			name = pthread;
+			path = src/pthread;
+			sourceTree = "<group>";
+		};
+		D2EB36851893293700FCFD45 /* rtl */ = {
+			isa = PBXGroup;
+			children = (
+				D2EB36861893293700FCFD45 /* flx_compiler_support_bodies.hpp */,
+				D2EB36871893293700FCFD45 /* flx_compiler_support_headers.hpp */,
+				D2EB36881893293700FCFD45 /* flx_dynlink.cpp */,
+				D2EB36891893293700FCFD45 /* flx_dynlink.hpp */,
+				D2EB368A1893293700FCFD45 /* flx_executil.cpp */,
+				D2EB368B1893293700FCFD45 /* flx_executil.hpp */,
+				D2EB368C1893293700FCFD45 /* flx_i18n.cpp */,
+				D2EB368D1893293700FCFD45 /* flx_i18n.hpp */,
+				D2EB368E1893293700FCFD45 /* flx_ioutil.cpp */,
+				D2EB368F1893293700FCFD45 /* flx_ioutil.hpp */,
+				D2EB36901893293700FCFD45 /* flx_main.cpp */,
+				D2EB36911893293700FCFD45 /* flx_rtl.cpp */,
+				D2EB36921893293700FCFD45 /* flx_rtl.hpp */,
+				D2EB36931893293700FCFD45 /* flx_strutil.cpp */,
+				D2EB36941893293700FCFD45 /* flx_strutil.hpp */,
+				D2EB36951893293700FCFD45 /* flx_sync.cpp */,
+				D2EB36961893293700FCFD45 /* flx_sync.hpp */,
+				D2EB36971893293700FCFD45 /* plat_linux.cpp */,
+				D2EB36981893293700FCFD45 /* plat_linux.hpp */,
+			);
+			name = rtl;
+			path = build/release/share/src/rtl;
+			sourceTree = "<group>";
+		};
+		D2EB36A2189329FF00FCFD45 /* flx_async */ = {
+			isa = PBXGroup;
+			children = (
+				D2EB36A3189329FF00FCFD45 /* flx_async.cpp */,
+				D2EB36A4189329FF00FCFD45 /* flx_async.hpp */,
+			);
+			name = flx_async;
+			path = build/release/share/src/flx_async;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -113,6 +317,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D2EB367B1893289D00FCFD45 /* pthread_condv.cpp in Sources */,
+				D2EB36731893289D00FCFD45 /* flx_exceptions.cpp in Sources */,
+				D2EB369B1893293700FCFD45 /* flx_i18n.cpp in Sources */,
+				D2EB36481893287E00FCFD45 /* flx_run_lib_static.cpp in Sources */,
+				D2EB36801893289D00FCFD45 /* pthread_semaphore.cpp in Sources */,
+				D2EB36A5189329FF00FCFD45 /* flx_async.cpp in Sources */,
+				D2EB367F1893289D00FCFD45 /* pthread_posix_thread.cpp in Sources */,
+				D2EB367C1893289D00FCFD45 /* pthread_counter.cpp in Sources */,
+				D2EB36721893289D00FCFD45 /* flx_eh.cpp in Sources */,
+				D2EB367A1893289D00FCFD45 /* pthread_work_fifo.cpp in Sources */,
+				D2EB36A01893293700FCFD45 /* flx_sync.cpp in Sources */,
+				D2EB36831893289D00FCFD45 /* pthread_win_posix_condv_emul.cpp in Sources */,
+				D2EB36761893289D00FCFD45 /* flx_judy_scanner.cpp in Sources */,
+				D2EB36491893287E00FCFD45 /* flx_run_main.cxx in Sources */,
+				D2EB36791893289D00FCFD45 /* pthread_bound_queue.cpp in Sources */,
+				D2EB36811893289D00FCFD45 /* pthread_thread_control.cpp in Sources */,
+				D2EB369C1893293700FCFD45 /* flx_ioutil.cpp in Sources */,
+				D2EB36A11893293700FCFD45 /* plat_linux.cpp in Sources */,
+				D2EB369A1893293700FCFD45 /* flx_executil.cpp in Sources */,
+				D2EB36991893293700FCFD45 /* flx_dynlink.cpp in Sources */,
+				D2EB36781893289D00FCFD45 /* flx_ts_collector.cpp in Sources */,
+				D2EB36771893289D00FCFD45 /* flx_serialisers.cpp in Sources */,
+				D2EB369E1893293700FCFD45 /* flx_rtl.cpp in Sources */,
+				D2EB369F1893293700FCFD45 /* flx_strutil.cpp in Sources */,
+				D2EB369D1893293700FCFD45 /* flx_main.cpp in Sources */,
+				D2EB36841893289D00FCFD45 /* pthread_win_thread.cpp in Sources */,
+				D2EB36741893289D00FCFD45 /* flx_collector.cpp in Sources */,
+				D2EB367E1893289D00FCFD45 /* pthread_mutex.cpp in Sources */,
+				D2EB367D1893289D00FCFD45 /* pthread_monitor.cpp in Sources */,
+				D2EB36821893289D00FCFD45 /* pthread_waitable_bool.cpp in Sources */,
+				D2EB36751893289D00FCFD45 /* flx_gc.cpp in Sources */,
 				D2EB36041893270100FCFD45 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -191,6 +426,12 @@
 		D2EB360A1893270100FCFD45 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					build/release/host/lib/rtl,
+					build/release/share/src/judy/src/,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -198,6 +439,12 @@
 		D2EB360B1893270100FCFD45 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					build/release/host/lib/rtl,
+					build/release/share/src/judy/src/,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -221,6 +468,7 @@
 				D2EB360B1893270100FCFD45 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
