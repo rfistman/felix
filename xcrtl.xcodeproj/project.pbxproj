@@ -116,6 +116,7 @@
 		D2EB36981893293700FCFD45 /* plat_linux.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = plat_linux.hpp; sourceTree = "<group>"; };
 		D2EB36A3189329FF00FCFD45 /* flx_async.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = flx_async.cpp; sourceTree = "<group>"; };
 		D2EB36A4189329FF00FCFD45 /* flx_async.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = flx_async.hpp; sourceTree = "<group>"; };
+		D2EB36A618932AED00FCFD45 /* flx_run.include */ = {isa = PBXFileReference; lastKnownFileType = text; name = flx_run.include; path = src/flx_drivers/flx_run.include; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,6 +163,7 @@
 		D2EB36451893286600FCFD45 /* flx_drivers */ = {
 			isa = PBXGroup;
 			children = (
+				D2EB36A618932AED00FCFD45 /* flx_run.include */,
 				D2EB36461893287E00FCFD45 /* flx_run_lib_static.cpp */,
 				D2EB36471893287E00FCFD45 /* flx_run_main.cxx */,
 			);
@@ -432,6 +434,10 @@
 					build/release/host/lib/rtl,
 					build/release/share/src/judy/src/,
 				);
+				OTHER_LDFLAGS = (
+					"-Lbuild/release/host/lib/rtl/",
+					"-ljudy_static",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -444,6 +450,10 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					build/release/host/lib/rtl,
 					build/release/share/src/judy/src/,
+				);
+				OTHER_LDFLAGS = (
+					"-Lbuild/release/host/lib/rtl/",
+					"-ljudy_static",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
