@@ -65,13 +65,6 @@ extern void *static_create_thread_frame;
 extern void *static_flx_start;
 #endif
 
-int do_final_cleanup(
-  bool debug_driver,
-  flx::gc::generic::gc_profile_t *gcp,
-  flx_dynlink_t *library,
-  flx_libinit_t *instance
-);
-
 struct doflx_data
 {
   bool debug_driver;
@@ -329,6 +322,7 @@ public:
   flx_libinit_t *instance ;
 
   void run_felix_pthread();
+  int do_final_cleanup(); // thread_control not passed in original version
 };
 
 
@@ -379,7 +373,7 @@ void world_minus_active::run_felix_pthread()
   }
 
   if (gcp->finalise)
-    do_final_cleanup(debug_driver, gcp, library, instance);
+    (void)do_final_cleanup();
 }
 
 // terminates process!
@@ -389,12 +383,7 @@ void world_minus_active::run_felix_pthread()
 // a program instance is separated from unloading
 // the library
 
-int do_final_cleanup(
-  bool debug_driver,
-  flx::gc::generic::gc_profile_t *gcp,
-  flx_dynlink_t *library,
-  flx_libinit_t *instance
-)
+int world_minus_active::do_final_cleanup()
 {
   flx::gc::generic::collector_t *collector = gcp->collector;
 
