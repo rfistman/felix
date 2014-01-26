@@ -312,7 +312,6 @@ void doflx(void *data) {
 
 static void *get_stack_pointer() { void *x=(void*)&x; return x; }
 
-
 class world_minus_active {
 public:
   bool debug_driver;
@@ -321,16 +320,34 @@ public:
   flx_dynlink_t *library;
   flx_libinit_t *instance ;
 
+  world_minus_active(
+    bool _debug_driver,
+    flx::gc::generic::gc_profile_t *_gcp,
+    flx::pthread::thread_control_t *_thread_control,
+    flx_dynlink_t *_library,
+    flx_libinit_t *_instance
+  );
+
+  ~world_minus_active();
+
   void run_felix_pthread();
+private:
   int do_final_cleanup(); // thread_control not passed in original version
+
+  std::list<fthread_t*> *active;
 };
 
-
-void world_minus_active::run_felix_pthread()
+world_minus_active::world_minus_active(
+  bool _debug_driver,
+  flx::gc::generic::gc_profile_t *_gcp,
+  flx::pthread::thread_control_t *_thread_control,
+  flx_dynlink_t *_library,
+  flx_libinit_t *_instance
+) : debug_driver(_debug_driver), gcp(_gcp), thread_control(_thread_control), library(_library), instance(_instance)
 {
   //fprintf(stderr, "run_felix_pthread -- the MAIN THREAD\n");
   flx::gc::generic::collector_t *collector = gcp->collector;
-  std::list<fthread_t*> *active = new std::list<fthread_t*>;
+  active = new std::list<fthread_t*>;
 
   {
     con_t *top = instance->main_proc;
@@ -348,28 +365,34 @@ void world_minus_active::run_felix_pthread()
     collector->add_root(ft);
     active->push_front(ft);
   }
+}
 
-  {
-    doflx(new doflx_data(
-      debug_driver,
-      gcp,
-      active,
-      thread_control)); // deletes active for us!
+void world_minus_active::run_felix_pthread()
+{
+  doflx(new doflx_data(
+    debug_driver,
+    gcp,
+    active,
+    thread_control)); // deletes active for us!
+  active = NULL;
+}
 
-    if (debug_driver)
-      fprintf(stderr, "MAIN THREAD FINISHED: waiting for other threads\n");
+world_minus_active::~world_minus_active()
+{
+  if (debug_driver)
+    fprintf(stderr, "MAIN THREAD FINISHED: waiting for other threads\n");
 
-    thread_control->join_all();
+  thread_control->join_all();
 
-    if (debug_driver) fprintf(stderr, "ALL THREADS DEAD: mainline cleanup!\n");
+  if (debug_driver) fprintf(stderr, "ALL THREADS DEAD: mainline cleanup!\n");
 
-    if (debug_driver) {
-      unsigned long uncollected = collector->get_allocation_count();
-      unsigned long roots = collector->get_root_count();
-      fprintf(stderr,
-        "program finished, %ld collections, %ld uncollected objects, roots %ld\n",
-        gcp->collections, uncollected, roots);
-    }
+  if (debug_driver) {
+    flx::gc::generic::collector_t *collector = gcp->collector;
+    unsigned long uncollected = collector->get_allocation_count();
+    unsigned long roots = collector->get_root_count();
+    fprintf(stderr,
+      "program finished, %ld collections, %ld uncollected objects, roots %ld\n",
+      gcp->collections, uncollected, roots);
   }
 
   if (gcp->finalise)
@@ -506,7 +529,7 @@ int run_felix(
     }
 
     // Run the felix usercode.
-    world_minus_active  wma = {debug_driver, gcp, thread_control, &library, &instance};
+    world_minus_active  wma(debug_driver, gcp, thread_control, &library, &instance);
     wma.run_felix_pthread();
 
     // And we're done, so remove the current thread.
