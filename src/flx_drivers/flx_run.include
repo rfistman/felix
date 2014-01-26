@@ -319,13 +319,20 @@ void doflx(void *data) {
 
 static void *get_stack_pointer() { void *x=(void*)&x; return x; }
 
-void run_felix_pthread(
-  bool debug_driver,
-  flx::gc::generic::gc_profile_t *gcp,
-  flx::pthread::thread_control_t *thread_control,
-  flx_dynlink_t *library,
-  flx_libinit_t *instance
-)
+
+class world_minus_active {
+public:
+  bool debug_driver;
+  flx::gc::generic::gc_profile_t *gcp;
+  flx::pthread::thread_control_t *thread_control;
+  flx_dynlink_t *library;
+  flx_libinit_t *instance ;
+
+  void run_felix_pthread();
+};
+
+
+void world_minus_active::run_felix_pthread()
 {
   //fprintf(stderr, "run_felix_pthread -- the MAIN THREAD\n");
   flx::gc::generic::collector_t *collector = gcp->collector;
@@ -510,7 +517,8 @@ int run_felix(
     }
 
     // Run the felix usercode.
-    run_felix_pthread(debug_driver, gcp, thread_control, &library, &instance);
+    world_minus_active  wma = {debug_driver, gcp, thread_control, &library, &instance};
+    wma.run_felix_pthread();
 
     // And we're done, so remove the current thread.
     thread_control->remove_thread();
