@@ -78,31 +78,40 @@ struct doflx_data
   flx::gc::generic::gc_profile_t *gcp;
   std::list<fthread_t*> *active;
   flx::pthread::thread_control_t *thread_control;
+
+  unsigned long async_count;
+  async_hooker* async;
+  sync_state_t ss;  // (d, gcp, active), (ft, request), (pc, fs)
+
   doflx_data(bool d, flx::gc::generic::gc_profile_t *g, std::list<fthread_t*> *a, flx::pthread::thread_control_t *tc)
-   : debug_driver(d), gcp(g), active(a), thread_control(tc) {}
+  : debug_driver(d), gcp(g), active(a), thread_control(tc),
+  async_count(0),
+  async(NULL),
+  ss(debug_driver, gcp, active)
+  {}
+
+  ~doflx_data();
+
+  bool doflx();
+private:
+  bool do_async();
 };
 
 static
 create_async_hooker_t *ptr_create_async_hooker = NULL;
 
-void doflx(void *data) {
+static void doflx_pthread_entry(void *data) {
   doflx_data *d = (doflx_data*)data;
-  bool debug_driver = d->debug_driver;
-  flx::gc::generic::gc_profile_t *gcp = d-> gcp;
-  std::list<fthread_t*> *active = d->active;
-  flx::pthread::thread_control_t *thread_control = d->thread_control;
+  while(d->doflx()) ;
   delete d;
+}
 
-  unsigned long async_count = 0;
-  async_hooker* async = NULL;
-
+bool doflx_data::doflx() {
   try
   {
-    sync_state_t ss(debug_driver, gcp, active);
-
-  process_active:
-    if (debug_driver) 
-     fprintf(stderr, "doflx: Process active ..");
+    process_active:
+    if (debug_driver)
+      fprintf(stderr, "doflx: Process active ..");
 
     if (debug_driver)
       fprintf(stderr, "dofx: Before running: Sync state is %s/%s\n",
@@ -121,77 +130,77 @@ void doflx(void *data) {
     if (FLX_LIKELY(ss.fs == delegated)) {
       switch (ss.request->variant) {
         case svc_collect:
-          {
-            gcp->actually_collect();
-          }
-          goto process_active;
+        {
+          gcp->actually_collect();
+        }
+          return true;
 
         case svc_spawn_pthread:
+        {
+          fthread_t *ftx = *(fthread_t**)ss.request->data;
+          if (debug_driver)
+            fprintf(stderr, "doflx: Spawn pthread %p\n", ftx);
+          gcp->collector->add_root(ftx);
+          std::list<fthread_t*> *pactive = new std::list<fthread_t*>;
+          pactive->push_front(ftx);
+          void *data = new doflx_data(debug_driver, gcp, pactive, thread_control);
+          flx_detached_thread_t dummy;
+
+          if (debug_driver)
+            fprintf(stderr, "doflx: Starting new pthread, thread counter= %d\n",
+              thread_control->thread_count());
+
           {
-            fthread_t *ftx = *(fthread_t**)ss.request->data;
-            if (debug_driver) 
-               fprintf(stderr, "doflx: Spawn pthread %p\n", ftx);
-            gcp->collector->add_root(ftx);
-            std::list<fthread_t*> *pactive = new std::list<fthread_t*>;
-            pactive->push_front(ftx);
-            void *data = new doflx_data(debug_driver, gcp, pactive, thread_control);
-            flx_detached_thread_t dummy;
+            flx_mutex_t spawner_lock;
+            flx_condv_t spawner_cond;
+            bool spawner_flag = false;
+            flx_mutex_locker_t locktite(spawner_lock);
+            dummy.init(doflx_pthread_entry, data, thread_control,
+              &spawner_lock, &spawner_cond,
+              &spawner_flag
+            );
 
             if (debug_driver)
-              fprintf(stderr, "doflx: Starting new pthread, thread counter= %d\n",
-                thread_control->thread_count());
+              fprintf(stderr,
+                "Thread %p waiting for spawned thread to register itself\n",
+                (void*)get_current_native_thread());
 
-            {
-              flx_mutex_t spawner_lock;
-              flx_condv_t spawner_cond;
-              bool spawner_flag = false;
-              flx_mutex_locker_t locktite(spawner_lock);
-              dummy.init( doflx, data, thread_control,
-                &spawner_lock, &spawner_cond,
-                &spawner_flag
-              );
+            while (!spawner_flag)
+              spawner_cond.wait(&spawner_lock);
 
-              if (debug_driver)
-                fprintf(stderr,
-                  "Thread %p waiting for spawned thread to register itself\n",
-                  (void*)get_current_native_thread());
-
-              while (!spawner_flag)
-                spawner_cond.wait(&spawner_lock);
-
-              if (debug_driver)
-                fprintf(stderr,
-                  "Thread %p notes spawned thread has registered itself\n",
-                  (void*)get_current_native_thread());
-            }
+            if (debug_driver)
+              fprintf(stderr,
+                "Thread %p notes spawned thread has registered itself\n",
+                (void*)get_current_native_thread());
           }
-          goto process_active;
+        }
+          return true;
 
         case svc_general:
-          {
-            if (debug_driver)
-              fprintf(stderr, "doflx: svc_general from fthread=%p\n", ss.ft);
+        {
+          if (debug_driver)
+            fprintf(stderr, "doflx: svc_general from fthread=%p\n", ss.ft);
 
+          if(debug_driver)
+            fprintf(stderr, "doflx: async=%p, ptr_create_async_hooker=%p\n", async,ptr_create_async_hooker);
+          if (!async) {
             if(debug_driver)
-              fprintf(stderr, "doflx: async=%p, ptr_create_async_hooker=%p\n", async,ptr_create_async_hooker);
-            if (!async) {
-              if(debug_driver)
-                fprintf(stderr,"doflx: trying to create async system..\n");
+              fprintf(stderr,"doflx: trying to create async system..\n");
 
-              if (ptr_create_async_hooker == NULL) {
-                if(debug_driver)
-                  fprintf(stderr,"doflx: trying to create async hooker..\n");
+            if (ptr_create_async_hooker == NULL) {
+              if(debug_driver)
+                fprintf(stderr,"doflx: trying to create async hooker..\n");
 #if !FLX_SUPPORT_ASYNC
-                ptr_create_async_hooker = 0;
-                if(debug_driver)
-                  fprintf(stderr,"doflx: FLX_SUPPORT_ASYNC FALSE\n");
+              ptr_create_async_hooker = 0;
+              if(debug_driver)
+                fprintf(stderr,"doflx: FLX_SUPPORT_ASYNC FALSE\n");
 #else
                 ptr_create_async_hooker = create_async_hooker;
                 if(debug_driver)
                   fprintf(stderr,"doflx: FLX_SUPPORT_ASYNC TRUE, create_async_hooker = %p\n", create_async_hooker);
 #  ifndef FLX_STATIC_LINK
                 // Try to dynamically load the felix asynchronous library
-                
+
                 if(debug_driver)
                   fprintf(stderr,"doflx: dymamic_link: trying to load %s\n",FLX_ASYNC_DLL_NAME);
 
@@ -230,34 +239,34 @@ void doflx(void *data) {
                 if(debug_driver)
                   fprintf(stderr,"doflx: static_link: flx_async_static SHOULD BE LINKED IN\n");
 #endif
-              }
-              // Error out if we don't have the hooker function.
-              if (ptr_create_async_hooker == NULL) {
-                fprintf(stderr,
-                  "doflx: Unable to initialise async I/O system: terminating\n");
-                exit(1);
-              }
-
-              async = (*ptr_create_async_hooker)(
-                20000, // bound on resumable thread queue
-                50,    // bound on general input job queue
-                2,     // number of threads in job pool
-                50,    // bound on async fileio job queue
-                1      // number of threads doing async fileio
-              );
             }
-            ++async_count;
-            // CHANGED TO USE NEW UNION LAYOUT RULES
-            // One less level of indirection for pointers
-            // void *dreq =  *(void**)ss.request->data;
-            void *dreq =  (void*)ss.request->data;
+            // Error out if we don't have the hooker function.
+            if (ptr_create_async_hooker == NULL) {
+              fprintf(stderr,
+                "doflx: Unable to initialise async I/O system: terminating\n");
+              exit(1);
+            }
 
-            // requests are now ALWAYS considered asynchronous
-            // even if the request handler reschedules them immediately
-            async->handle_request(dreq, ss.ft);
-            ss.pc = next_fthread_pos;
+            async = (*ptr_create_async_hooker)(
+              20000, // bound on resumable thread queue
+              50,    // bound on general input job queue
+              2,     // number of threads in job pool
+              50,    // bound on async fileio job queue
+              1      // number of threads doing async fileio
+            );
           }
-          goto process_active;
+          ++async_count;
+          // CHANGED TO USE NEW UNION LAYOUT RULES
+          // One less level of indirection for pointers
+          // void *dreq =  *(void**)ss.request->data;
+          void *dreq =  (void*)ss.request->data;
+
+          // requests are now ALWAYS considered asynchronous
+          // even if the request handler reschedules them immediately
+          async->handle_request(dreq, ss.ft);
+          ss.pc = next_fthread_pos;
+        }
+          return true;
 
         default:
           fprintf(stderr,
@@ -266,35 +275,17 @@ void doflx(void *data) {
       }
     }
 
-    if (ss.fs == blocked) goto do_async;
-    if (ss.fs == terminated) goto cleanup;
-
-    fprintf(stderr, "doflx: Unknown frun return status 0x%4x\n", ss.fs);
-    abort();
-
-  do_async:
-    // ran out of active threads - are there any in the async queue?
-    if (debug_driver) {
-      fprintf(stderr,
-        "doflx: out of active synchronous threads, trying async, count=%ld\n", async_count);
+    switch(ss.fs) {
+      case blocked: // ran out of active threads - are there any in the async queue?
+        if(do_async())
+          return true;
+        break;
+      case terminated:
+        break;
+      default:
+        fprintf(stderr, "doflx: Unknown frun return status 0x%4x\n", ss.fs);
+        abort();
     }
-
-    if (async && async_count > 0) {
-      // STILL A ROOT
-      fthread_t* ftp = async->dequeue();
-
-      if (debug_driver)
-        fprintf(stderr, "doflx: Async Retrieving fthread %p\n", ftp);
-
-      active->push_front(ftp);
-      --async_count;
-      ss.pc = next_fthread_pos;
-      goto process_active;
-    }
-
-    if (debug_driver) 
-      fprintf(stderr, "doflx: Out of jobs\n");
-  cleanup:;
   }
   catch (flx_exception_t &x) { flx_exception_handler (&x); }
   catch (std::exception &x) { std_exception_handler (&x); }
@@ -302,15 +293,42 @@ void doflx(void *data) {
   catch (::std::string &x) { fprintf (stderr, "Exception type string : %s\n", x.c_str()); }
   catch (...) { fprintf(stderr, "Unknown exception in thread!\n"); }
 
+
+  if (debug_driver)
+    fprintf(stderr, "doflx: Out of jobs\n");
+  return false;
+}
+
+bool doflx_data::do_async() {
+  if (debug_driver) {
+    fprintf(stderr,
+      "doflx: out of active synchronous threads, trying async, count=%ld\n", async_count);
+  }
+
+  if (async && async_count > 0) {
+    // STILL A ROOT
+    fthread_t* ftp = async->dequeue();
+
+    if (debug_driver)
+      fprintf(stderr, "doflx: Async Retrieving fthread %p\n", ftp);
+
+    active->push_front(ftp);
+    --async_count;
+    ss.pc = next_fthread_pos;
+    return true;
+  }
+  return false;
+}
+
+doflx_data::~doflx_data() {
   try
   {
-    if (debug_driver) 
+    if (debug_driver)
       fprintf(stderr, "doflx: Terminating Felix subsystem\n");
     delete async;
     delete active;
   }
   catch (...) { fprintf(stderr, "Unknown exception deleting async!\n"); }
-
 }
 
 // RUN A FELIX INSTANCE IN THE CURRENT PTHREAD
@@ -349,11 +367,14 @@ void run_felix_pthread(
   }
 
   {
-    doflx(new doflx_data(
-      debug_driver,
-      gcp,
-      active,
-      thread_control)); // deletes active for us!
+    {
+      doflx_data d(
+        debug_driver,
+        gcp,
+        active,
+        thread_control); // deletes active for us!
+      while(d.doflx()) ;
+    }
 
     if (debug_driver)
       fprintf(stderr, "MAIN THREAD FINISHED: waiting for other threads\n");
