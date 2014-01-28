@@ -583,37 +583,6 @@ int run_felix_state::explicit_dtor(
   return 0;
 }
 
-// MAINLINE, ONLY DONE ONCE
-int run_felix(
-  bool debug_driver,
-  flx::gc::generic::gc_profile_t *gcp,
-  flx::pthread::thread_control_t *thread_control,
-  char *filename,
-  int flx_argc,
-  char **flx_argv
-)
-{
-  int result;
-
-  try
-  {
-    run_felix_state fs(debug_driver, gcp, thread_control, filename, flx_argc, flx_argv);
-
-    // Run the felix usercode.
-    while(fs.dfd->doflx()) ;
-
-    result = fs.explicit_dtor(debug_driver, gcp, thread_control);
-  }
-  catch (flx_exception_t &x) { return flx_exception_handler(&x); }
-  catch (std::exception &x) { return std_exception_handler (&x); }
-  catch (...)
-  {
-    fprintf(stderr, "flx_run driver ends with unknown EXCEPTION\n");
-    return 4;
-  }
-  return result;
-}
-
 static double egetv(char const *name, double dflt)
 {
   char *env = std::getenv(name);
@@ -782,13 +751,25 @@ int FELIX_MAIN (int argc, char** argv)
     collector
   );
 
-  // We're all set up, so run felix
-  error_exit_code = run_felix(
-    debug_driver,
-    gcp,
-    &thread_control,
-    filename, flx_argc, flx_argv
-  );
+  // MAINLINE, ONLY DONE ONCE
+  // TODO: simply return error_exit_code
+  try {
+    // We're all set up, so run felix
+    run_felix_state fs(debug_driver, gcp, &thread_control, filename, flx_argc, flx_argv);
+
+    // Run the felix usercode.
+    while(fs.dfd->doflx()) ;
+
+    error_exit_code = fs.explicit_dtor(debug_driver, gcp, &thread_control);
+  }
+  catch (flx_exception_t &x) { error_exit_code = flx_exception_handler(&x); }
+  catch (std::exception &x) { error_exit_code = std_exception_handler (&x); }
+  catch (...)
+  {
+    fprintf(stderr, "flx_run driver ends with unknown EXCEPTION\n");
+    error_exit_code = 4;
+  }
+
 
   // And we're done, so start cleaning up.
   delete gcp;
