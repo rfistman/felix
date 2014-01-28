@@ -469,6 +469,120 @@ int do_final_cleanup(
   return s.substr (i+1,j-i-1);
 }
 
+class run_felix_state {
+public:
+  flx_dynlink_t library;
+  flx_libinit_t instance;
+
+
+  doflx_data *dfd;
+
+  run_felix_state(
+    bool debug_driver,
+    flx::gc::generic::gc_profile_t *gcp,
+    flx::pthread::thread_control_t *thread_control,
+    char *filename,
+    int flx_argc,
+    char **flx_argv
+  );
+
+  int explicit_dtor(
+    bool debug_driver,
+    flx::gc::generic::gc_profile_t *gcp,
+    flx::pthread::thread_control_t *thread_control
+  );
+};
+
+run_felix_state::run_felix_state(
+  bool debug_driver,
+  flx::gc::generic::gc_profile_t *gcp,
+  flx::pthread::thread_control_t *thread_control,
+  char *filename,
+  int flx_argc,
+  char **flx_argv
+)
+#ifdef FLX_STATIC_LINK
+: library(
+      modulenameoffilename(filename),
+      (thread_frame_creator_t)static_create_thread_frame,
+      (start_t)static_flx_start,
+      (main_t)&flx_main)
+#endif
+{
+  if (debug_driver)
+    fprintf(stderr, "flx_run driver begins %s\n", flx_argv[0]);
+
+#ifndef FLX_STATIC_LINK
+  library.dynamic_link(filename);
+#endif
+
+  // BUG: this is not the stack base
+  void *stack_base = get_stack_pointer();
+  thread_control->add_thread(stack_base);
+
+  // Create the usercode driver instance
+  instance.create(
+    &library,
+    gcp,
+    library.main_sym,
+    flx_argc,
+    flx_argv,
+    stdin,
+    stdout,
+    stderr);
+
+  if (debug_driver) {
+    fprintf(stderr, "loaded library %s at %p\n", filename, library.library);
+    fprintf(stderr, "thread frame at %p\n", instance.thread_frame);
+    fprintf(stderr, "initial continuation at %p\n", instance.start_proc);
+    fprintf(stderr, "main continuation at %p\n", instance.main_proc);
+  }
+
+  dfd = new doflx_data(
+    debug_driver,
+    gcp,
+    run_felix_pthread_ctor(gcp, &library, &instance),
+    thread_control); // deletes active for us!
+}
+
+int run_felix_state::explicit_dtor(
+  bool debug_driver,
+  flx::gc::generic::gc_profile_t *gcp,
+  flx::pthread::thread_control_t *thread_control
+)
+{
+  delete dfd;
+
+  run_felix_pthread_dtor(debug_driver, gcp, thread_control, &library, &instance);
+
+  // And we're done, so remove the current thread.
+  thread_control->remove_thread();
+
+  if (gcp->finalise)
+  {
+    if (library.refcnt > 0)
+    {
+      fprintf(stderr,
+        "flx_run %p library still referenced %ld times?!\n",
+        library.library, library.refcnt);
+      return 6;
+    }
+    if (debug_driver)
+      fprintf(stderr, "flx_run driver ends with finalisation complete\n");
+  }
+  else
+  {
+    if (debug_driver || gcp->debug_collections)
+    {
+      unsigned long a = gcp->collector->get_allocation_count();
+      fprintf(stderr,
+        "flx_run driver ends with finalisation skipped, %ld uncollected "
+          "objects\n", a);
+    }
+  }
+  return 0;
+}
+
 // MAINLINE, ONLY DONE ONCE
 int run_felix(
   bool debug_driver,
@@ -479,92 +593,16 @@ int run_felix(
   char **flx_argv
 )
 {
+  int result;
+
   try
   {
-    if (debug_driver)
-      fprintf(stderr, "flx_run driver begins %s\n", flx_argv[0]);
-
-    flx_libinit_t instance;
-
-#ifdef FLX_STATIC_LINK
-/*
-    flx_dynlink_t library(
-      (thread_frame_creator_t)&create_thread_frame,
-      (start_t)&flx_start,
-      (main_t)&flx_main);
-*/
-    flx_dynlink_t library(
-      modulenameoffilename(filename),
-      (thread_frame_creator_t)static_create_thread_frame,
-      (start_t)static_flx_start,
-      (main_t)&flx_main);
-#else
-    flx_dynlink_t library;
-    library.dynamic_link(filename);
-#endif
-
-    flx::gc::generic::collector_t *collector = gcp->collector;
-
-    void *stack_base = get_stack_pointer();
-    thread_control->add_thread(stack_base);
-
-    // Create the usercode driver instance
-    instance.create(
-      &library,
-      gcp,
-      library.main_sym,
-      flx_argc,
-      flx_argv,
-      stdin,
-      stdout,
-      stderr);
-
-    if (debug_driver) {
-      fprintf(stderr, "loaded library %s at %p\n", filename, library.library);
-      fprintf(stderr, "thread frame at %p\n", instance.thread_frame);
-      fprintf(stderr, "initial continuation at %p\n", instance.start_proc);
-      fprintf(stderr, "main continuation at %p\n", instance.main_proc);
-    }
+    run_felix_state fs(debug_driver, gcp, thread_control, filename, flx_argc, flx_argv);
 
     // Run the felix usercode.
-    std::list<fthread_t*> *active = run_felix_pthread_ctor(gcp, &library, &instance);
+    while(fs.dfd->doflx()) ;
 
-    {
-      doflx_data d(
-        debug_driver,
-        gcp,
-        active,
-        thread_control); // deletes active for us!
-      while(d.doflx()) ;
-    }
-
-    run_felix_pthread_dtor(debug_driver, gcp, thread_control, &library, &instance);
-
-    // And we're done, so remove the current thread.
-    thread_control->remove_thread();
-
-    if (gcp->finalise)
-    {
-      if (library.refcnt > 0)
-      {
-        fprintf(stderr,
-          "flx_run %p library still referenced %ld times?!\n",
-          library.library, library.refcnt);
-        return 6;
-      }
-      if (debug_driver)
-        fprintf(stderr, "flx_run driver ends with finalisation complete\n");
-    }
-    else
-    {
-      if (debug_driver || gcp->debug_collections)
-      {
-        unsigned long a = collector->get_allocation_count();
-        fprintf(stderr,
-          "flx_run driver ends with finalisation skipped, %ld uncollected "
-          "objects\n", a);
-      }
-    }
+    result = fs.explicit_dtor(debug_driver, gcp, thread_control);
   }
   catch (flx_exception_t &x) { return flx_exception_handler(&x); }
   catch (std::exception &x) { return std_exception_handler (&x); }
@@ -573,7 +611,7 @@ int run_felix(
     fprintf(stderr, "flx_run driver ends with unknown EXCEPTION\n");
     return 4;
   }
-  return 0;
+  return result;
 }
 
 static double egetv(char const *name, double dflt)
