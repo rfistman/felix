@@ -608,6 +608,8 @@ class flx_world {
 public:
   int flx_main(int argc, char** argv);
   int flx_main_ctor(int argc, char** argv);
+
+  int flx_main_dtor(int error_exit_code);
 };
 
 int flx_world::flx_main_ctor(int argc, char** argv) {
@@ -772,32 +774,7 @@ int flx_world::flx_main_ctor(int argc, char** argv) {
   return 0;
 }
 
-//static
-int flx_world::flx_main(int argc, char** argv) {
-   int error_exit_code = 0;
-
-  if((error_exit_code = flx_main_ctor(argc, argv))) return error_exit_code;
-
-  // MAINLINE, ONLY DONE ONCE
-  // TODO: simply return error_exit_code
-  try {
-    // We're all set up, so run felix
-    run_felix_state fs(debug_driver, gcp, thread_control, filename, flx_argc, flx_argv);
-
-    // Run the felix usercode.
-    while(fs.dfd->doflx()) ;
-
-    error_exit_code = fs.explicit_dtor(debug_driver, gcp, thread_control);
-  }
-  catch (flx_exception_t &x) { error_exit_code = flx_exception_handler(&x); }
-  catch (std::exception &x) { error_exit_code = std_exception_handler (&x); }
-  catch (...)
-  {
-    fprintf(stderr, "flx_run driver ends with unknown EXCEPTION\n");
-    error_exit_code = 4;
-  }
-
-
+int flx_world::flx_main_dtor(int error_exit_code) {
   // And we're done, so start cleaning up.
   delete gcp;
   delete collector;
@@ -831,10 +808,36 @@ int flx_world::flx_main(int argc, char** argv) {
   return error_exit_code;
 }
 
+//static
+int flx_world::flx_main(int argc, char** argv) {
+   int error_exit_code = 0;
+
+  if((error_exit_code = flx_main_ctor(argc, argv))) return error_exit_code;
+
+  // MAINLINE, ONLY DONE ONCE
+  // TODO: simply return error_exit_code
+  try {
+    // We're all set up, so run felix
+    run_felix_state fs(debug_driver, gcp, thread_control, filename, flx_argc, flx_argv);
+
+    // Run the felix usercode.
+    while(fs.dfd->doflx()) ;
+
+    error_exit_code = fs.explicit_dtor(debug_driver, gcp, thread_control);
+  }
+  catch (flx_exception_t &x) { error_exit_code = flx_exception_handler(&x); }
+  catch (std::exception &x) { error_exit_code = std_exception_handler (&x); }
+  catch (...)
+  {
+    fprintf(stderr, "flx_run driver ends with unknown EXCEPTION\n");
+    error_exit_code = 4;
+  }
+
+  return flx_main_dtor(error_exit_code);
+}
+
 int FELIX_MAIN (int argc, char** argv)
 {
   flx_world world;
   return world.flx_main(argc, argv);
 }
-
-
