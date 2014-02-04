@@ -602,6 +602,8 @@ class flx_world {
   flx::gc::collector::flx_collector_t *collector;
 
   flx::gc::generic::gc_profile_t *gcp;
+
+  flx::pthread::thread_control_t *thread_control;
 public:
   int flx_main(int argc, char** argv);
 };
@@ -747,10 +749,12 @@ int flx_world::flx_main(int argc, char** argv) {
   allocator = new flx::gc::collector::malloc_free();
   allocator->set_debug(debug_allocations);
 
-  flx::pthread::thread_control_t thread_control(debug_threads);
+  // previous direct ctor scope ended at closing brace of FLX_MAIN
+  // but delete can probably be moved up after collector delete (also used by run_felix_state_dtor)
+  thread_control = new flx::pthread::thread_control_t(debug_threads);
 
   // RF: doesn't need to be ts for !FLX_SUPPORT_ASYNC
-  collector = new flx::gc::collector::flx_ts_collector_t(allocator, &thread_control);
+  collector = new flx::gc::collector::flx_ts_collector_t(allocator, thread_control);
   collector->set_debug(debug_collections);
 
   gcp = new flx::gc::generic::gc_profile_t(
@@ -770,12 +774,12 @@ int flx_world::flx_main(int argc, char** argv) {
   // TODO: simply return error_exit_code
   try {
     // We're all set up, so run felix
-    run_felix_state fs(debug_driver, gcp, &thread_control, filename, flx_argc, flx_argv);
+    run_felix_state fs(debug_driver, gcp, thread_control, filename, flx_argc, flx_argv);
 
     // Run the felix usercode.
     while(fs.dfd->doflx()) ;
 
-    error_exit_code = fs.explicit_dtor(debug_driver, gcp, &thread_control);
+    error_exit_code = fs.explicit_dtor(debug_driver, gcp, thread_control);
   }
   catch (flx_exception_t &x) { error_exit_code = flx_exception_handler(&x); }
   catch (std::exception &x) { error_exit_code = std_exception_handler (&x); }
@@ -814,6 +818,7 @@ int flx_world::flx_main(int argc, char** argv) {
 #endif
   if (debug) fprintf(stderr, "flx_run driver ends code=%d\n", error_exit_code);
 
+  delete thread_control;  // RF: cautiously delete here
   return error_exit_code;
 }
 
