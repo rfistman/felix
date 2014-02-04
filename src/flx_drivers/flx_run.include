@@ -590,9 +590,14 @@ static double egetv(char const *name, double dflt)
   return val;
 }
 
-int FELIX_MAIN (int argc, char** argv)
-{
-  int error_exit_code = 0;
+class flx_world {
+public:
+  static int flx_main(int argc, char** argv);
+};
+
+//static
+int flx_world::flx_main(int argc, char** argv) {
+   int error_exit_code = 0;
 #ifndef FLX_STATIC_LINK
   bool static_link = false;
   if (argc<2)
@@ -801,3 +806,10 @@ int FELIX_MAIN (int argc, char** argv)
 
   return error_exit_code;
 }
+
+int FELIX_MAIN (int argc, char** argv)
+{
+  return flx_world::flx_main(argc, argv);
+}
+
+
