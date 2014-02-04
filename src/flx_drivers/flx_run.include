@@ -596,6 +596,12 @@ class flx_world {
   int flx_argc;     // ditto
 
   bool debug;
+
+  flx::gc::generic::allocator_t *allocator;
+
+  flx::gc::collector::flx_collector_t *collector;
+
+  flx::gc::generic::gc_profile_t *gcp;
 public:
   int flx_main(int argc, char** argv);
 };
@@ -738,17 +744,16 @@ int flx_world::flx_main(int argc, char** argv) {
       fprintf(stderr, "flx_argv[%d]->%s\n", i, flx_argv[i]);
   }
 
-  flx::gc::generic::allocator_t *allocator =
-    new flx::gc::collector::malloc_free();
+  allocator = new flx::gc::collector::malloc_free();
   allocator->set_debug(debug_allocations);
 
   flx::pthread::thread_control_t thread_control(debug_threads);
 
-  flx::gc::collector::flx_collector_t *collector =
-    new flx::gc::collector::flx_ts_collector_t(allocator, &thread_control);
+  // RF: doesn't need to be ts for !FLX_SUPPORT_ASYNC
+  collector = new flx::gc::collector::flx_ts_collector_t(allocator, &thread_control);
   collector->set_debug(debug_collections);
 
-  flx::gc::generic::gc_profile_t *gcp = new flx::gc::generic::gc_profile_t(
+  gcp = new flx::gc::generic::gc_profile_t(
     debug_allocations,
     debug_collections,
     report_collections,
