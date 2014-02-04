@@ -596,6 +596,7 @@ class flx_world {
   int flx_argc;     // ditto
 
   bool debug;
+  bool debug_driver;
 
   flx::gc::generic::allocator_t *allocator;
 
@@ -606,11 +607,10 @@ class flx_world {
   flx::pthread::thread_control_t *thread_control;
 public:
   int flx_main(int argc, char** argv);
+  int flx_main_ctor(int argc, char** argv);
 };
 
-//static
-int flx_world::flx_main(int argc, char** argv) {
-   int error_exit_code = 0;
+int flx_world::flx_main_ctor(int argc, char** argv) {
 #ifndef FLX_STATIC_LINK
   bool static_link = false;
   if (argc<2)
@@ -685,7 +685,7 @@ int flx_world::flx_main(int argc, char** argv) {
   }
 
 
-  bool debug_driver = (bool)egetv("FLX_DEBUG_DRIVER", debug);
+  debug_driver = (bool)egetv("FLX_DEBUG_DRIVER", debug);
   if (debug_driver)
   {
     fprintf(stderr, "[FLX_DEBUG_DRIVER] Driver debug enabled\n");
@@ -728,17 +728,17 @@ int flx_world::flx_main(int argc, char** argv) {
   if (debug)
     fprintf(stderr, "[FLX_ALLOW_COLLECTION_ANYWHERE] %s\n", allow_collection_anywhere ? "True" : "False");
 
+// RF: disabled because I've broken this
+#if 0&&FLX_HAVE_GNU
+  if (debug) fprintf(stderr, "Compiled by g++\n");
 
-#if FLX_HAVE_GNU
-    if (debug) fprintf(stderr, "Compiled by g++\n");
+  static void *init_sp = sp;
+  static void *init_fframe FLX_UNUSED = __builtin_frame_address(0);
+  static void *init_ret = __builtin_return_address(0);
 
-    static void *init_sp = sp;
-    static void *init_fframe FLX_UNUSED = __builtin_frame_address(0);
-    static void *init_ret = __builtin_return_address(0);
-
-    if (debug)
-      fprintf(stderr, "Stack pointer = %p, frame=%p, return=%p\n",
-        sp, init_fframe, init_ret);
+  if (debug)
+    fprintf(stderr, "Stack pointer = %p, frame=%p, return=%p\n",
+      sp, init_fframe, init_ret);
 #endif
 
   if (debug) {
@@ -769,6 +769,14 @@ int flx_world::flx_main(int argc, char** argv) {
     finalise,
     collector
   );
+  return 0;
+}
+
+//static
+int flx_world::flx_main(int argc, char** argv) {
+   int error_exit_code = 0;
+
+  if((error_exit_code = flx_main_ctor(argc, argv))) return error_exit_code;
 
   // MAINLINE, ONLY DONE ONCE
   // TODO: simply return error_exit_code
@@ -795,7 +803,8 @@ int flx_world::flx_main(int argc, char** argv) {
   delete collector;
   delete allocator;
 
-#if FLX_HAVE_GNU
+// RF: disabled stack stuff for now, because I've surely broken it
+#if 0 && FLX_HAVE_GNU
     // check the frame pointer isn't corrupted
     static void *fin_sp = sp;
     static void *fin_fframe FLX_UNUSED = __builtin_frame_address(0);
