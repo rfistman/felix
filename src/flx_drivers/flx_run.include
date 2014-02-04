@@ -595,7 +595,8 @@ class flx_world {
   char **flx_argv;  // ditto
   int flx_argc;     // ditto
 
-  public:
+  bool debug;
+public:
   int flx_main(int argc, char** argv);
 };
 
@@ -625,7 +626,7 @@ int flx_world::flx_main(int argc, char** argv) {
   filename = argv[1];
   flx_argv = argv+1;
   flx_argc = argc-1;
-  bool debug = (argc > 1) && (strcmp(argv[1], "--debug")==0);
+  debug = (argc > 1) && (strcmp(argv[1], "--debug")==0);
   if (debug)
   {
     if (argc < 3)
@@ -642,7 +643,7 @@ int flx_world::flx_main(int argc, char** argv) {
   filename = argv[0];
   flx_argv = argv;
   flx_argc = argc;
-  bool debug = false;
+  debug = false;
 
 //  printf("Statically linked Felix program running\n");
 #endif
