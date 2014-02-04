@@ -592,7 +592,7 @@ static double egetv(char const *name, double dflt)
 
 class flx_world {
 public:
-  static int flx_main(int argc, char** argv);
+  int flx_main(int argc, char** argv);
 };
 
 //static
@@ -809,7 +809,8 @@ int flx_world::flx_main(int argc, char** argv) {
 
 int FELIX_MAIN (int argc, char** argv)
 {
-  return flx_world::flx_main(argc, argv);
+  flx_world world;
+  return world.flx_main(argc, argv);
 }
 
 
