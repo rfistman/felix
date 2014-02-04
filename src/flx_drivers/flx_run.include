@@ -591,7 +591,11 @@ static double egetv(char const *name, double dflt)
 }
 
 class flx_world {
-public:
+  char *filename;   // probably not needed outside constructor
+  char **flx_argv;  // ditto
+  int flx_argc;     // ditto
+
+  public:
   int flx_main(int argc, char** argv);
 };
 
@@ -618,9 +622,9 @@ int flx_world::flx_main(int argc, char** argv) {
     printf("  FLX_ALLOW_COLLECTION_ANYWHERE # (default yes)\n");
     return 1;
   }
-  char *filename = argv[1];
-  char **flx_argv = argv+1;
-  int flx_argc = argc-1;
+  filename = argv[1];
+  flx_argv = argv+1;
+  flx_argc = argc-1;
   bool debug = (argc > 1) && (strcmp(argv[1], "--debug")==0);
   if (debug)
   {
@@ -635,9 +639,9 @@ int flx_world::flx_main(int argc, char** argv) {
   }
 #else
   bool static_link = true;
-  char *filename = argv[0];
-  char **flx_argv = argv;
-  int flx_argc = argc;
+  filename = argv[0];
+  flx_argv = argv;
+  flx_argc = argc;
   bool debug = false;
 
 //  printf("Statically linked Felix program running\n");
