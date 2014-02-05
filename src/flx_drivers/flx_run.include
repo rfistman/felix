@@ -605,6 +605,8 @@ class flx_world {
   flx::gc::generic::gc_profile_t *gcp;
 
   flx::pthread::thread_control_t *thread_control;
+
+  run_felix_state *fs;
 public:
   int flx_main(int argc, char** argv);
   int flx_main_ctor(int argc, char** argv);
@@ -818,12 +820,13 @@ int flx_world::flx_main(int argc, char** argv) {
   // TODO: simply return error_exit_code
   try {
     // We're all set up, so run felix
-    run_felix_state fs(debug_driver, gcp, thread_control, filename, flx_argc, flx_argv);
+    fs = new run_felix_state(debug_driver, gcp, thread_control, filename, flx_argc, flx_argv);
 
     // Run the felix usercode.
-    while(fs.dfd->doflx()) ;
+    while(fs->dfd->doflx()) ;
 
-    error_exit_code = fs.explicit_dtor(debug_driver, gcp, thread_control);
+    error_exit_code = fs->explicit_dtor(debug_driver, gcp, thread_control);
+    delete fs;  // WARNING: can override error_exit_code (if dtor throws, doesn't appear to have one)
   }
   catch (flx_exception_t &x) { error_exit_code = flx_exception_handler(&x); }
   catch (std::exception &x) { error_exit_code = std_exception_handler (&x); }
